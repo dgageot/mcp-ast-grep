@@ -1,0 +1,10 @@
+version: "3"
+
+tasks:
+  default:
+    cmd: task --list
+
+  build:
+    desc: Build the MCP server
+    cmds:
+      - docker build .
