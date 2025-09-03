@@ -16,7 +16,7 @@ func main() {
 	s := server.NewMCPServer("mcp-ast-grep", "1.0.0")
 
 	run := mcp.NewTool("ast-grep",
-		mcp.WithDescription("Run ast-grep commands. ast-grep is a very fast CLI tool for code structural search, lint and rewriting."),
+		mcp.WithDescription("Run ast-grep commands. ast-grep is a very fast CLI tool for code structural search, lint and rewriting. An example of usage is `ast-grep run -l go --pattern 'const $NAME = $VAL' --json .`"),
 		mcp.WithTitleAnnotation("Run ast-grep"),
 		mcp.WithArray("args",
 			mcp.Required(),
