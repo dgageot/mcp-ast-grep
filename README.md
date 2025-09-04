@@ -5,5 +5,5 @@
 ## Usage with docker mcp
 
 ```sh
-docker mcp tools --verbose call ast-grep args=run args="--pattern" args='const $NAME = $VAL' args="--json" args="."
+docker mcp tools call ast-grep args=run args="--pattern" args='const $NAME = $VAL' args="--json" args="."
 ```
