@@ -1,8 +1,8 @@
 module github.com/dgageot/mcp-ast-grep
 
-go 1.25.0
+go 1.25.1
 
-require github.com/mark3labs/mcp-go v0.39.1
+require github.com/mark3labs/mcp-go v0.41.1
 
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect

@@ -1,0 +1,1 @@
+Fetch from https://github.com/ast-grep/ast-grep-mcp/blob/main/ast-grep.mdc
