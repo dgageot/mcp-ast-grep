@@ -22,18 +22,19 @@ func main() {
 	defer cancel()
 
 	run := mcp.NewTool("ast-grep",
-		mcp.WithDescription("Run ast-grep commands. ast-grep is a very fast CLI tool for code structural search, lint and rewriting.`"),
-		mcp.WithTitleAnnotation("Run ast-grep"),
-		mcp.WithArray("args",
-			mcp.Description("Arguments for the ast-grep command"),
-			mcp.WithStringItems(),
+		mcp.WithDescription("Search codebases using ast-grep patterns for straightforward structural matches. (returns json)"),
+		mcp.WithTitleAnnotation("Search codebases using ast-grep patterns"),
+		mcp.WithReadOnlyHintAnnotation(true),
+		mcp.WithString("pattern",
+			mcp.Description("The ast-grep pattern to search for. Note, the pattern must have valid AST structure."),
 			mcp.Required(),
 		),
-	)
-	help := mcp.NewTool("ast-grep-help",
-		mcp.WithDescription("Get help for ast-grep commands."),
-		mcp.WithTitleAnnotation("Get help for ast-grep"),
-		mcp.WithReadOnlyHintAnnotation(true),
+		mcp.WithString("lang",
+			mcp.Description("The language of the code. If not specified, will be auto-detected based on file extensions."),
+		),
+		mcp.WithString("dir",
+			mcp.Description("The directory to search in. If not specified, will use the current working directory."),
+		),
 	)
 
 	s := server.NewMCPServer(
@@ -43,7 +44,6 @@ func main() {
 	)
 	s.AddTools(
 		server.ServerTool{Tool: run, Handler: runHandler},
-		server.ServerTool{Tool: help, Handler: helpHandler},
 	)
 
 	srv := server.NewStdioServer(s)
@@ -54,16 +54,20 @@ func main() {
 }
 
 func runHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	args, err := request.RequireStringSlice("args")
+	pattern, err := request.RequireString("pattern")
 	if err != nil {
 		return mcp.NewToolResultError(err.Error()), nil
 	}
 
-	return runAstGrep(ctx, args...), nil
-}
+	args := []string{"run", "--pattern", pattern, "--json"}
+	if lang := request.GetString("lang", ""); lang != "" {
+		args = append(args, "--lang", lang)
+	}
+	if dir := request.GetString("dir", "."); dir != "" {
+		args = append(args, dir)
+	}
 
-func helpHandler(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	return runAstGrep(ctx, "--help"), nil
+	return runAstGrep(ctx, args...), nil
 }
 
 func runAstGrep(ctx context.Context, args ...string) *mcp.CallToolResult {
